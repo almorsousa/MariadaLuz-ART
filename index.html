@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="pt" data-active-lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maria da Luz — Artista de Moçambique (1928–2018)</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    *, *::before, *::after { 
+      margin: 0; 
+      padding: 0; 
+      box-sizing: border-box; 
+    }
+
+    :root {
+      --bg: #FBF7F0;
+      --text: #3D2B1F;
+      --muted: #7A6652;
+      --accent: #C05830;
+      --accent-hover: #A04422;
+      --accent2: #D4952C;
+      --card: #F3EAE0;
+      --divider: #D9C9B3;
+      --hero-bg: #F0E6D6;
+      --caption-bg: rgba(61, 43, 31, 0.92);
+      --transition-speed: 0.3s;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      line-height: 1.8;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Language Switcher Top Navigation ── */
+    .lang-toggle-container {
+      position: fixed;
+      top: 1.5rem;
+      right: 2rem;
+      z-index: 900;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(251, 247, 240, 0.92);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--divider);
+      border-radius: 2rem;
+      padding: 4px;
+      box-shadow: 0 4px 20px rgba(61, 43, 31, 0.08);
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      padding: 0.45rem 1.1rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 1.5rem;
+      transition: all var(--transition-speed) ease;
+      color: var(--muted);
+      outline: none;
+    }
+
+    .lang-btn:hover {
+      color: var(--accent);
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      color: #FFFFFF !important;
+      box-shadow: 0 2px 8px rgba(192, 88, 48, 0.35);
+    }
+
+    /* ── Language Visibility Rules ── */
+    /* Hide all tagged elements by default */
+    [data-lang] {
+      display: none !important;
+    }
+
+    /* Show Portuguese elements when pt is active */
+    html[data-active-lang="pt"] blockquote[data-lang="pt"],
+    html[data-active-lang="pt"] div[data-lang="pt"],
+    html[data-active-lang="pt"] section[data-lang="pt"],
+    html[data-active-lang="pt"] p[data-lang="pt"],
+    html[data-active-lang="pt"] h1[data-lang="pt"],
+    html[data-active-lang="pt"] h2[data-lang="pt"],
+    html[data-active-lang="pt"] h3[data-lang="pt"],
+    html[data-active-lang="pt"] h4[data-lang="pt"] {
+      display: block !important;
+    }
+
+    html[data-active-lang="pt"] span[data-lang="pt"],
+    html[data-active-lang="pt"] a[data-lang="pt"],
+    html[data-active-lang="pt"] button[data-lang="pt"] {
+      display: inline-block !important;
+    }
+
+    html[data-active-lang="pt"] .bio-grid[data-lang="pt"] {
+      display: grid !important;
+    }
+
+    /* Show English elements when en is active */
+    html[data-active-lang="en"] blockquote[data-lang="en"],
+    html[data-active-lang="en"] div[data-lang="en"],
+    html[data-active-lang="en"] section[data-lang="en"],
+    html[data-active-lang="en"] p[data-lang="en"],
+    html[data-active-lang="en"] h1[data-lang="en"],
+    html[data-active-lang="en"] h2[data-lang="en"],
+    html[data-active-lang="en"] h3[data-lang="en"],
+    html[data-active-lang="en"] h4[data-lang="en"] {
+      display: block !important;
+    }
+
+    html[data-active-lang="en"] span[data-lang="en"],
+    html[data-active-lang="en"] a[data-lang="en"],
+    html[data-active-lang="en"] button[data-lang="en"] {
+      display: inline-block !important;
+    }
+
+    html[data-active-lang="en"] .bio-grid[data-lang="en"] {
+      display: grid !important;
+    }
+
+    /* ── Hero Section ── */
+    .hero {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem 3rem;
+      position: relative;
+      background: linear-gradient(180deg, var(--hero-bg) 0%, var(--bg) 100%);
+    }
+
+    .hero-dates {
+      font-size: 0.9rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      font-weight: 600;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(3rem, 8vw, 5.8rem);
+      font-weight: 400;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      line-height: 1.1;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero .subtitle {
+      font-size: 1.1rem;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 2.5rem;
+      font-weight: 400;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .scroll-hint:hover {
+      color: var(--accent);
+    }
+
+    .scroll-arrow {
+      animation: float 2.5s ease-in-out infinite;
+      font-size: 1.2rem;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* ── Main Layout & Sections ── */
+    section {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 5rem 2rem;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 400;
+      margin-bottom: 2.5rem;
+      color: var(--text);
+      line-height: 1.25;
+    }
+
+    /* ── Biography Card ── */
+    .bio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    .bio-card {
+      background: var(--card);
+      border-radius: 1rem;
+      padding: 3.5rem;
+      border: 1px solid var(--divider);
+      box-shadow: 0 8px 30px rgba(61, 43, 31, 0.04);
+    }
+
+    .bio-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 400;
+      color: var(--text);
+      margin-bottom: 1.5rem;
+    }
+
+    .bio-text p {
+      margin-bottom: 1.5rem;
+      color: var(--text);
+      font-size: 1.05rem;
+      line-height: 1.9;
+    }
+
+    .bio-text p:last-child {
+      margin-bottom: 0;
+    }
+
+    .bio-lead::first-letter {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.6rem;
+      float: left;
+      line-height: 0.8;
+      margin-right: 0.75rem;
+      margin-top: 0.2rem;
+      color: var(--accent);
+    }
+
+    /* ── Bio Slideshow ── */
+    .bio-slideshow {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 3/4;
+      border-radius: 1rem;
+      overflow: hidden;
+      border: 1px solid var(--divider);
+      box-shadow: 0 8px 30px rgba(61, 43, 31, 0.08);
+    }
+
+    .bio-slideshow img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .bio-slideshow img.active {
+      opacity: 1;
+    }
+
+    .slideshow-dots {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 0.5rem;
+      z-index: 2;
+    }
+
+    .slideshow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+      padding: 0;
+    }
+
+    .slideshow-dot.active {
+      background: #fff;
+    }
+
+    /* ── Gallery Filters & Grid ── */
+    .gallery-header {
+      margin-bottom: 3rem;
+    }
+
+    .gallery-filters {
+      display: flex;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: transparent;
+      border: 1px solid var(--divider);
+      color: var(--muted);
+      padding: 0.5rem 1.4rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 2rem;
+      cursor: pointer;
+      transition: all var(--transition-speed) ease;
+    }
+
+    .filter-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #FFFFFF;
+      box-shadow: 0 4px 12px rgba(192, 88, 48, 0.25);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 0.75rem;
+      overflow: hidden;
+      background: var(--card);
+      cursor: pointer;
+      aspect-ratio: 3/4;
+      border: 1px solid var(--divider);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+      transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 12px 25px rgba(61, 43, 31, 0.12);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.6s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.05);
+    }
+
+    .gallery-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 2.2rem 1.25rem 1.25rem;
+      background: linear-gradient(to top, var(--caption-bg) 0%, rgba(61, 43, 31, 0) 100%);
+      transform: translateY(100%);
+      transition: transform 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .gallery-item:hover .gallery-caption {
+      transform: translateY(0);
+    }
+
+    .gallery-caption h4 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: 1.1rem;
+      color: #FFFFFF;
+    }
+
+    .gallery-caption span {
+      font-size: 0.75rem;
+      color: var(--accent2);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      font-weight: 500;
+    }
+
+    /* ── Lightbox Overlay ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 14, 10, 0.94);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .lightbox.open {
+      display: flex;
+      opacity: 1;
+    }
+
+    .lightbox-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 75vh;
+      object-fit: contain;
+      border-radius: 0.25rem;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 1.5rem;
+      right: 2rem;
+      background: none;
+      border: none;
+      color: #E0E0E0;
+      font-size: 2.5rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .lightbox-close:hover {
+      color: var(--accent2);
+    }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #FFFFFF;
+      font-size: 2rem;
+      cursor: pointer;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+
+    .lightbox-nav.prev { left: 1.5rem; }
+    .lightbox-nav.next { right: 1.5rem; }
+    .lightbox-nav:hover { 
+      background: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .lightbox-caption {
+      margin-top: 1.25rem;
+      text-align: center;
+      color: #E0E0E0;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+    }
+
+    /* ── Footer ── */
+    footer {
+      background: var(--hero-bg);
+      padding: 5rem 2rem 3rem;
+      border-top: 1px solid var(--divider);
+      margin-top: 4rem;
+    }
+
+    .footer-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    footer .artist-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--text);
+      margin-bottom: 0.4rem;
+    }
+
+    footer .artist-tag {
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 3rem;
+    }
+
+    .copyright {
+      padding-top: 2rem;
+      border-top: 1px solid var(--divider);
+      font-size: 0.85rem;
+      line-height: 1.7;
+      color: var(--muted);
+      max-width: 750px;
+      margin: 0 auto;
+    }
+
+    .copyright p {
+      margin-bottom: 0.75rem;
+    }
+
+    .takedown a {
+      color: var(--accent);
+      text-decoration: none;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.3s;
+      font-weight: 500;
+    }
+
+    .takedown a:hover {
+      border-bottom-color: var(--accent);
+    }
+
+    /* ── Responsiveness ── */
+    @media (max-width: 768px) {
+      .hero { min-height: 80vh; }
+      .bio-card { padding: 2rem 1.5rem; }
+      .bio-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+      .lang-toggle-container { top: 1rem; right: 1rem; }
+      .lightbox-nav { width: 40px; height: 40px; font-size: 1.5rem; }
+      .lightbox-nav.prev { left: 0.5rem; }
+      .lightbox-nav.next { right: 0.5rem; }
+    }
+
+    @media (max-width: 480px) {
+      .gallery-grid { grid-template-columns: 1fr; }
+      .gallery-filters { justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Header: Two distinct side-by-side language buttons -->
+  <div class="lang-toggle-container" role="navigation" aria-label="Language selection">
+    <button class="lang-btn active" id="btnPT" data-lang-target="pt" onclick="setLang('pt')">PT</button>
+    <button class="lang-btn" id="btnEN" data-lang-target="en" onclick="setLang('en')">EN</button>
+  </div>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-content">
+      <div class="hero-dates">1928 — 2018</div>
+      <h1>Maria da Luz</h1>
+      <p class="subtitle">
+        <span data-lang="pt">Artista de Moçambique</span>
+        <span data-lang="en">Artist of Mozambique</span>
+      </p>
+    </div>
+    <a href="#biografia" class="scroll-hint" aria-label="Scroll to biography">
+      <span data-lang="pt">Explorar</span>
+      <span data-lang="en">Explore</span>
+      <span class="scroll-arrow">↓</span>
+    </a>
+  </header>
+
+  <!-- Biography Section -->
+  <main id="biografia">
+    <section>
+      <div class="section-label">
+        <span data-lang="pt">Biografia</span>
+        <span data-lang="en">Biography</span>
+      </div>
+
+      <h2>
+        <span data-lang="pt">A Vida e Obra</span>
+        <span data-lang="en">Life &amp; Work</span>
+      </h2>
+
+      <!-- Portuguese Bio -->
+      <div class="bio-grid" data-lang="pt">
+        <div class="bio-card">
+          <h3>Bem-vindos ao Universo de Maria da Luz (1928–2018)</h3>
+          <div class="bio-text">
+            <p class="bio-lead">Nascida em Lourenço Marques (atual Maputo), Maria da Luz dedicou a sua vida a capturar a alma vibrante, as gentes e a beleza do quotidiano da sua terra natal. Aluna do prestigiado João Ayres no <em>Núcleo de Arte</em>, a sua trajetória artística estendeu-se por mais de cinco décadas, levando a sua obra a coleções nos cinco continentes.</p>
+            <p>Embora reconhecida pela sua pintura e pelo seu papel fundamental como cofundadora do influente grupo de artistas <strong>TAM</strong> em 1983, foi na escultura que encontrou a sua verdadeira vocação. A sua emblemática escultura <em>"Moçambicana"</em> tornou-se, durante anos, o galardão máximo das artes em Moçambique.</p>
+            <p>Através da forma e da cor, Maria da Luz deixou-nos um legado visual inesquecível — uma verdadeira declaração de amor à cultura moçambicana e à essência humana.</p>
+          </div>
+        </div>
+        <div class="bio-slideshow" id="slideshowPT"></div>
+      </div>
+
+      <!-- English Bio -->
+      <div class="bio-grid" data-lang="en">
+        <div class="bio-card">
+          <h3>Welcome to the World of Maria da Luz (1928–2018)</h3>
+          <div class="bio-text">
+            <p class="bio-lead">Born in Lourenço Marques (now Maputo), Maria da Luz dedicated her life to capturing the vivid spirit, everyday people, and quiet beauty of her homeland. A student of the renowned João Ayres at the <em>Núcleo de Arte</em>, her creative journey spanned over five decades, with her work celebrated across five continents.</p>
+            <p>Though widely recognized for her paintings and her co-founding role in the influential artist collective <strong>TAM</strong> in 1983, sculpture was where her heart truly lay. Her iconic sculpture <em>"Moçambicana"</em> stood for years as the country's preeminent award celebrating excellence in the arts.</p>
+            <p>Through her evocative use of form and color, Maria da Luz left behind an enduring visual legacy — a lifelong love letter to Mozambican culture and human connection.</p>
+          </div>
+        </div>
+        <div class="bio-slideshow" id="slideshowEN"></div>
+      </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section id="galeria">
+      <div class="gallery-header">
+        <div class="section-label">
+          <span data-lang="pt">Galeria</span>
+          <span data-lang="en">Gallery</span>
+        </div>
+        <h2>
+          <span data-lang="pt">Obras Selecionadas</span>
+          <span data-lang="en">Selected Works</span>
+        </h2>
+
+        <!-- Category Filters -->
+        <div class="gallery-filters" role="tablist" aria-label="Gallery filters">
+          <button class="filter-btn active" data-filter="all">
+            <span data-lang="pt">Todas</span>
+            <span data-lang="en">All</span>
+          </button>
+          <button class="filter-btn" data-filter="pintura">
+            <span data-lang="pt">Pinturas</span>
+            <span data-lang="en">Paintings</span>
+          </button>
+          <button class="filter-btn" data-filter="desenho">
+            <span data-lang="pt">Desenhos</span>
+            <span data-lang="en">Drawings</span>
+          </button>
+          <button class="filter-btn" data-filter="escultura">
+            <span data-lang="pt">Esculturas</span>
+            <span data-lang="en">Sculptures</span>
+          </button>
+          <button class="filter-btn" data-filter="foto">
+            <span data-lang="pt">Fotografias</span>
+            <span data-lang="en">Photographs</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Gallery Grid (populated by JS) -->
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
+  </main>
+
+  <!-- Lightbox Modal -->
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visualizador de Imagem">
+    <button class="lightbox-close" id="lbClose" aria-label="Fechar">&times;</button>
+    <button class="lightbox-nav prev" id="lbPrev" aria-label="Anterior">&#8249;</button>
+    <button class="lightbox-nav next" id="lbNext" aria-label="Próximo">&#8250;</button>
+    <div class="lightbox-content">
+      <img src="" alt="" id="lbImg">
+      <div class="lightbox-caption" id="lbCap"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-container">
+      <p class="artist-name">Maria da Luz</p>
+      <p class="artist-tag">
+        <span data-lang="pt">Em memória eterna (1928–2018) — Artista de Moçambique</span>
+        <span data-lang="en">In eternal memory (1928–2018) — Artist of Mozambique</span>
+      </p>
+
+      <div class="copyright">
+        <p>&copy; Estate of Maria da Luz. All artwork shared for archival and educational purposes. All rights reserved.</p>
+        <p class="takedown">
+          <span data-lang="pt">Se detém direitos sobre qualquer conteúdo neste site ou tem preocupações relativas à sua publicação, por favor contacte <a href="mailto:your.email@example.com">your.email@example.com</a> para solicitar a remoção.</span>
+          <span data-lang="en">If you hold rights to any content on this site or have concerns regarding its publication, please contact <a href="mailto:your.email@example.com">your.email@example.com</a> to request removal.</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ══════════════════════════════════════════════
+    // IMAGE DATA — add/remove entries here only
+    // Prefix maps to category. Files use underscores.
+    // ══════════════════════════════════════════════
+    const PREFIX_MAP = {
+      quadro:    { cat: 'pintura',   labelPt: 'Pintura',    labelEn: 'Painting' },
+      bw_pen:    { cat: 'desenho',   labelPt: 'Desenho',    labelEn: 'Drawing' },
+      Escultura: { cat: 'escultura', labelPt: 'Escultura',  labelEn: 'Sculpture' },
+      photo:     { cat: 'foto',      labelPt: 'Fotografia', labelEn: 'Photograph' }
+    };
+
+    const ROMAN = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+
+    const IMAGES = [
+      'quadro_1.png','quadro_2.png','quadro_3.png','quadro_4.png',
+      'quadro_5.png','quadro_6.png','quadro_7.png',
+      'bw_pen_1.png','bw_pen_2.png',
+      'Escultura_1.png','Escultura_2.png','Escultura_3.png',
+      'photo_1.png','photo_2.png','photo_3.png','photo_4.png'
+    ];
+
+    // ══════════════════════════════════════════════
+    // LANGUAGE SWITCHER
+    // ══════════════════════════════════════════════
+    function setLang(lang) {
+      document.documentElement.setAttribute('data-active-lang', lang);
+      document.documentElement.setAttribute('lang', lang);
+      const btnPT = document.getElementById('btnPT');
+      const btnEN = document.getElementById('btnEN');
+      if (lang === 'pt') {
+        btnPT.classList.add('active');
+        btnEN.classList.remove('active');
+      } else {
+        btnEN.classList.add('active');
+        btnPT.classList.remove('active');
+      }
+      try { localStorage.setItem('mdl_preferred_lang', lang); } catch(e) {}
+    }
+
+    (function initLanguage() {
+      let savedLang = 'pt';
+      try { savedLang = localStorage.getItem('mdl_preferred_lang') || 'pt'; } catch(e) {}
+      setLang(savedLang);
+    })();
+
+    // ══════════════════════════════════════════════
+    // AUTO-GENERATE GALLERY FROM IMAGE DATA
+    // ══════════════════════════════════════════════
+    const galleryGrid = document.getElementById('galleryGrid');
+    const prefixCounters = {};
+
+    IMAGES.forEach(file => {
+      const prefix = file.replace(/_\d+\.png$/, '');
+      const meta = PREFIX_MAP[prefix];
+      if (!meta) return;
+
+      if (!(prefix in prefixCounters)) prefixCounters[prefix] = 0;
+      const num = prefixCounters[prefix]++;
+      const numeral = ROMAN[num] || (num + 1);
+
+      const item = document.createElement('div');
+      item.className = 'gallery-item';
+      item.dataset.category = meta.cat;
+      item.innerHTML =
+        '<img src="images/' + file + '" alt="' + meta.labelEn + ' ' + numeral + '" loading="lazy">' +
+        '<div class="gallery-caption">' +
+          '<span data-lang="pt">' + meta.labelPt + '</span>' +
+          '<span data-lang="en">' + meta.labelEn + '</span>' +
+          '<h4>' + prefix.charAt(0).toUpperCase() + prefix.slice(1).replace('_',' ') + ' ' + numeral + '</h4>' +
+        '</div>';
+      galleryGrid.appendChild(item);
+    });
+
+    // Re-select gallery items after generation
+    const galleryItems = document.querySelectorAll('.gallery-item');
+
+    // ══════════════════════════════════════════════
+    // AUTO-GENERATE BIO SLIDESHOWS (photo_ images)
+    // ══════════════════════════════════════════════
+    const photoFiles = IMAGES.filter(f => f.startsWith('photo_'));
+
+    function buildSlideshow(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      photoFiles.forEach((file, i) => {
+        const img = document.createElement('img');
+        img.src = 'images/' + file;
+        img.alt = 'Foto ' + (i + 1);
+        if (i === 0) img.classList.add('active');
+        container.appendChild(img);
+      });
+      const dots = document.createElement('div');
+      dots.className = 'slideshow-dots';
+      photoFiles.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.className = 'slideshow-dot' + (i === 0 ? ' active' : '');
+        dot.setAttribute('aria-label', 'Slide ' + (i + 1));
+        dot.addEventListener('click', () => goToSlide(container, i));
+        dots.appendChild(dot);
+      });
+      container.appendChild(dots);
+    }
+
+    function goToSlide(container, index) {
+      const imgs = container.querySelectorAll('img');
+      const dots = container.querySelectorAll('.slideshow-dot');
+      imgs.forEach(img => img.classList.remove('active'));
+      dots.forEach(d => d.classList.remove('active'));
+      if (imgs[index]) imgs[index].classList.add('active');
+      if (dots[index]) dots[index].classList.add('active');
+    }
+
+    buildSlideshow('slideshowPT');
+    buildSlideshow('slideshowEN');
+
+    // Auto-advance slideshows
+    function startSlideshowAuto(containerId) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      let current = 0;
+      const imgs = container.querySelectorAll('img');
+      if (imgs.length <= 1) return;
+      setInterval(() => {
+        current = (current + 1) % imgs.length;
+        goToSlide(container, current);
+      }, 4000);
+    }
+    startSlideshowAuto('slideshowPT');
+    startSlideshowAuto('slideshowEN');
+
+    // ══════════════════════════════════════════════
+    // GALLERY CATEGORY FILTER
+    // ══════════════════════════════════════════════
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelector('.filter-btn.active')?.classList.remove('active');
+        btn.classList.add('active');
+        const f = btn.dataset.filter;
+        galleryItems.forEach(item => {
+          item.style.display = (f === 'all' || item.dataset.category === f) ? '' : 'none';
+        });
+      });
+    });
+
+    // ══════════════════════════════════════════════
+    // LIGHTBOX
+    // ══════════════════════════════════════════════
+    const lightbox = document.getElementById('lightbox');
+    const lbImg = document.getElementById('lbImg');
+    const lbCap = document.getElementById('lbCap');
+    let visibleItems = [], currentIndex = 0;
+
+    function openLightbox(item) {
+      visibleItems = Array.from(galleryItems).filter(el => el.style.display !== 'none');
+      currentIndex = visibleItems.indexOf(item);
+      updateLightboxContent();
+      lightbox.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function updateLightboxContent() {
+      if (!visibleItems.length || currentIndex < 0) return;
+      const img = visibleItems[currentIndex].querySelector('img');
+      lbImg.src = img.src;
+      lbImg.alt = img.alt;
+      lbCap.textContent = visibleItems[currentIndex].querySelector('h4').textContent;
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    galleryItems.forEach(item => item.addEventListener('click', () => openLightbox(item)));
+    document.getElementById('lbClose').addEventListener('click', closeLightbox);
+    document.getElementById('lbPrev').addEventListener('click', () => {
+      currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length;
+      updateLightboxContent();
+    });
+    document.getElementById('lbNext').addEventListener('click', () => {
+      currentIndex = (currentIndex + 1) % visibleItems.length;
+      updateLightboxContent();
+    });
+    lightbox.addEventListener('click', e => {
+      if (e.target === lightbox) closeLightbox();
+    });
+    document.addEventListener('keydown', e => {
+      if (!lightbox.classList.contains('open')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') { currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length; updateLightboxContent(); }
+      if (e.key === 'ArrowRight') { currentIndex = (currentIndex + 1) % visibleItems.length; updateLightboxContent(); }
+    });
+  </script>
+</body>
+</html>
