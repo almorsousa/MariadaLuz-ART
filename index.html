@@ -22,7 +22,6 @@
       --text: #2b1f1d;
       --muted: #705f57;
       --accent: #d8684a;
-      --accent-hover: #b74d2e;
       --accent2: #efbf52;
       --card: #f9ead7;
       --divider: #e7c7a6;
@@ -51,47 +50,101 @@
       -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Language Switcher Top Navigation ── */
-    .lang-toggle-container {
+    /* ── Sticky Header ── */
+    .site-header {
       position: fixed;
-      top: 1.5rem;
-      right: 2rem;
+      top: 0;
+      left: 0;
+      right: 0;
       z-index: 900;
       display: flex;
       align-items: center;
-      gap: 4px;
-      background: rgba(251, 247, 240, 0.92);
-      backdrop-filter: blur(10px);
-      border: 1px solid var(--divider);
-      border-radius: 2rem;
-      padding: 4px;
-      box-shadow: 0 4px 20px rgba(61, 43, 31, 0.08);
+      justify-content: space-between;
+      padding: 0 2.5rem;
+      height: 60px;
+      background: rgba(255, 250, 241, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(231, 199, 166, 0.4);
+      transform: translateY(-100%);
+      opacity: 0;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+      pointer-events: none;
     }
 
-    .lang-btn {
+    .site-header.visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .header-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.01em;
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    .header-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .header-links a {
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--transition-speed);
+    }
+
+    .header-links a:hover {
+      color: var(--accent);
+    }
+
+    .header-lang {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(251, 247, 240, 0.6);
+      border: 1px solid var(--divider);
+      border-radius: 1.5rem;
+      padding: 3px;
+    }
+
+    .header-lang .lang-btn {
       background: transparent;
       border: none;
-      padding: 0.45rem 1.1rem;
+      padding: 0.3rem 0.85rem;
       font-family: 'Inter', sans-serif;
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       cursor: pointer;
-      border-radius: 1.5rem;
+      border-radius: 1.2rem;
       transition: all var(--transition-speed) ease;
       color: var(--muted);
       outline: none;
     }
 
-    .lang-btn:hover {
+    .header-lang .lang-btn:hover {
       color: var(--accent);
     }
 
-    .lang-btn.active {
+    .header-lang .lang-btn.active {
       background: var(--accent);
-      color: #FFFFFF !important;
-      box-shadow: 0 2px 8px rgba(192, 88, 48, 0.35);
+      color: #fff !important;
+      box-shadow: 0 2px 6px rgba(192, 88, 48, 0.3);
     }
 
     /* ── Language Visibility Rules ── */
@@ -101,7 +154,6 @@
     }
 
     /* Show Portuguese elements when pt is active */
-    html[data-active-lang="pt"] blockquote[data-lang="pt"],
     html[data-active-lang="pt"] div[data-lang="pt"],
     html[data-active-lang="pt"] section[data-lang="pt"],
     html[data-active-lang="pt"] p[data-lang="pt"],
@@ -123,7 +175,6 @@
     }
 
     /* Show English elements when en is active */
-    html[data-active-lang="en"] blockquote[data-lang="en"],
     html[data-active-lang="en"] div[data-lang="en"],
     html[data-active-lang="en"] section[data-lang="en"],
     html[data-active-lang="en"] p[data-lang="en"],
@@ -238,6 +289,10 @@
       max-width: 1100px;
       margin: 0 auto;
       padding: 5rem 2rem;
+    }
+
+    #galeria {
+      max-width: 1400px;
     }
 
     .section-label {
@@ -370,48 +425,14 @@
       background: #fff;
     }
 
-    /* ── Gallery Filters & Grid ── */
+    /* ── Gallery Grid ── */
     .gallery-header {
       margin-bottom: 3rem;
     }
 
-    .gallery-filters {
-      display: flex;
-      gap: 0.75rem;
-      margin-bottom: 2.5rem;
-      flex-wrap: wrap;
-    }
-
-    .filter-btn {
-      background: transparent;
-      border: 1px solid var(--divider);
-      color: var(--muted);
-      padding: 0.5rem 1.4rem;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.8rem;
-      font-weight: 500;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      border-radius: 2rem;
-      cursor: pointer;
-      transition: all var(--transition-speed) ease;
-    }
-
-    .filter-btn:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .filter-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: #FFFFFF;
-      box-shadow: 0 4px 12px rgba(192, 88, 48, 0.25);
-    }
-
     .gallery-grid {
-      columns: 3 240px;
-      column-gap: 1rem;
+      columns: 4 180px;
+      column-gap: 0.5rem;
       align-items: start;
     }
 
@@ -419,20 +440,19 @@
       position: relative;
       display: inline-block;
       width: 100%;
-      margin: 0 0 1rem;
-      border-radius: 0.9rem;
+      margin: 0 0 0.5rem;
+      border-radius: 0;
       overflow: hidden;
       background: var(--card);
       cursor: pointer;
-      border: 1px solid rgba(85, 67, 59, 0.08);
-      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+      border: none;
       break-inside: avoid;
       transition: transform 0.35s ease, box-shadow 0.35s ease;
     }
 
     .gallery-item:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 14px 28px rgba(61, 43, 31, 0.1);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(61, 43, 31, 0.1);
     }
 
     .gallery-media {
@@ -454,7 +474,7 @@
     }
 
     .gallery-caption {
-      display: none !important;
+      display: none;
     }
 
     /* ── Lightbox Overlay ── */
@@ -582,18 +602,6 @@
       border-color: var(--accent);
     }
 
-    .lightbox.is-zoomed .lightbox-close {
-      top: 50%;
-      right: 2rem;
-      transform: translateY(-50%);
-    }
-
-    .lightbox.is-zoomed .lightbox-zoom {
-      top: 50%;
-      right: 5rem;
-      transform: translateY(-50%);
-    }
-
     .lightbox-content.zoomed {
       cursor: grab;
       overflow: hidden;
@@ -684,12 +692,18 @@
     }
 
     /* ── Responsiveness ── */
+    @media (min-width: 1600px) {
+      .gallery-grid { columns: 5 200px; }
+      #galeria { max-width: 1600px; }
+    }
+
     @media (max-width: 768px) {
       .hero { min-height: 80vh; }
       .bio-card { padding: 2rem 1.5rem; }
       .bio-grid { grid-template-columns: 1fr; }
-      .gallery-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
-      .lang-toggle-container { top: 1rem; right: 1rem; }
+      .gallery-grid { columns: 2 160px; column-gap: 0.4rem; }
+      .site-header { padding: 0 1.25rem; }
+      .header-links { display: none; }
       .lightbox-nav { width: 40px; height: 40px; font-size: 1.5rem; }
       .lightbox-zoom { width: 40px; height: 40px; font-size: 1.4rem; right: 4rem; }
       .lightbox-nav.prev { left: 0.5rem; }
@@ -697,18 +711,26 @@
     }
 
     @media (max-width: 480px) {
-      .gallery-grid { grid-template-columns: 1fr; }
-      .gallery-filters { justify-content: center; }
+      .gallery-grid { columns: 1; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Navigation Header: Two distinct side-by-side language buttons -->
-  <div class="lang-toggle-container" role="navigation" aria-label="Language selection">
-    <button class="lang-btn active" id="btnPT" data-lang-target="pt" onclick="setLang('pt')">PT</button>
-    <button class="lang-btn" id="btnEN" data-lang-target="en" onclick="setLang('en')">EN</button>
-  </div>
+  <!-- Sticky Header (appears on scroll) -->
+  <header class="site-header" id="siteHeader">
+    <a href="#" class="header-name">Maria da Luz</a>
+    <nav class="header-nav">
+      <ul class="header-links">
+        <li><a href="#biografia" data-lang="pt">Biografia</a><a href="#biografia" data-lang="en">Biography</a></li>
+        <li><a href="#galeria" data-lang="pt">Obras</a><a href="#galeria" data-lang="en">Works</a></li>
+      </ul>
+      <div class="header-lang">
+        <button class="lang-btn active" id="btnPT" data-lang-target="pt" onclick="setLang('pt')">PT</button>
+        <button class="lang-btn" id="btnEN" data-lang-target="en" onclick="setLang('en')">EN</button>
+      </div>
+    </nav>
+  </header>
 
   <!-- Hero Section -->
   <header class="hero">
@@ -774,7 +796,6 @@
           <span data-lang="pt">Obras Selecionadas</span>
           <span data-lang="en">Selected Works</span>
         </h2>
-
       </div>
 
       <!-- Gallery Grid (populated by JS) -->
@@ -963,17 +984,22 @@
     startSlideshowAuto('slideshowEN');
 
     // ══════════════════════════════════════════════
-    // GALLERY CATEGORY FILTER
+    // STICKY HEADER — shows after scrolling past hero
     // ══════════════════════════════════════════════
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelector('.filter-btn.active')?.classList.remove('active');
-        btn.classList.add('active');
-        const f = btn.dataset.filter;
-        getGalleryItems().forEach(item => {
-        });
-      });
-    });
+    const siteHeader = document.getElementById('siteHeader');
+    const heroEl = document.querySelector('.hero');
+
+    function updateHeaderVisibility() {
+      const heroBottom = heroEl.getBoundingClientRect().bottom;
+      if (heroBottom < 0) {
+        siteHeader.classList.add('visible');
+      } else {
+        siteHeader.classList.remove('visible');
+      }
+    }
+
+    window.addEventListener('scroll', updateHeaderVisibility, { passive: true });
+    updateHeaderVisibility();
 
     // ══════════════════════════════════════════════
     // LIGHTBOX
@@ -1033,6 +1059,26 @@
       }
     }
 
+    function zoomIn() {
+      if (!isZoomed) {
+        isZoomed = true;
+        lbContent.classList.add('zoomed');
+        lightbox.classList.add('is-zoomed');
+        lbZoom.classList.add('active');
+      }
+      zoomLevel = Math.min(6, zoomLevel + 0.5);
+      applyPan();
+    }
+
+    function zoomOut() {
+      zoomLevel = Math.max(1, zoomLevel - 0.5);
+      if (zoomLevel <= 1) {
+        resetZoom();
+        return;
+      }
+      applyPan();
+    }
+
     function applyPan() {
       lbImg.style.transform = 'scale(' + zoomLevel + ') translate(' + panX + 'px, ' + panY + 'px)';
     }
@@ -1086,24 +1132,6 @@
       isPanning = false;
     });
 
-    // Mouse wheel zoom
-    lbContent.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      if (!isZoomed) {
-        isZoomed = true;
-        lbContent.classList.add('zoomed');
-        lightbox.classList.add('is-zoomed');
-        lbZoom.classList.add('active');
-      }
-      zoomLevel += e.deltaY > 0 ? -0.12 : 0.12;
-      zoomLevel = Math.max(1, Math.min(6, zoomLevel));
-      if (zoomLevel <= 1) {
-        resetZoom();
-        return;
-      }
-      applyPan();
-    }, { passive: false });
-
     galleryGrid.addEventListener('click', e => {
       const item = e.target.closest('.gallery-item');
       if (!item) return;
@@ -1129,8 +1157,8 @@
       if (e.key === 'Escape') closeLightbox();
       if (e.key === 'ArrowLeft') { resetZoom(); currentIndex = (currentIndex - 1 + visibleItems.length) % visibleItems.length; updateLightboxContent(); }
       if (e.key === 'ArrowRight') { resetZoom(); currentIndex = (currentIndex + 1) % visibleItems.length; updateLightboxContent(); }
-      if (e.key === '+' || e.key === '=') { e.preventDefault(); toggleZoom(); }
-      if (e.key === '-') { e.preventDefault(); if (isZoomed) toggleZoom(); }
+      if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomIn(); }
+      if (e.key === '-') { e.preventDefault(); zoomOut(); }
     });
   </script>
 </body>
