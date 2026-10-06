@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="pt" data-active-lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Pintura II — Maria da Luz</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #fffaf1;
+      --text: #2b1f1d;
+      --muted: #705f57;
+      --accent: #d8684a;
+      --divider: #e7c7a6;
+      --viewer-bg: #f7ead6;
+      --zoom-bar-height: 5rem;
+      --vh: 1vh;
+      --transition-speed: 0.3s;
+      --ease-out: cubic-bezier(.23, 1, .32, 1);
+    }
+
+    [hidden] { display: none !important; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      font-weight: 300;
+      line-height: 1.8;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: calc(var(--vh) * 100);
+    }
+
+    button { font-family: 'Inter', sans-serif; }
+
+    /* ── Language Visibility Rules ── */
+    [data-lang] { display: none !important; }
+    html[data-active-lang="pt"] [data-lang="pt"] { display: block !important; }
+    html[data-active-lang="en"] [data-lang="en"] { display: block !important; }
+    html[data-active-lang="pt"] span[data-lang="pt"],
+    html[data-active-lang="pt"] a[data-lang="pt"],
+    html[data-active-lang="pt"] button[data-lang="pt"],
+    html[data-active-lang="en"] span[data-lang="en"],
+    html[data-active-lang="en"] a[data-lang="en"],
+    html[data-active-lang="en"] button[data-lang="en"] { display: inline-block !important; }
+
+    /* ── Round icon button (btn-icon-round) ── */
+    .btn-round {
+      appearance: none;
+      background: #000;
+      border: none;
+      border-radius: 50%;
+      color: #fff;
+      cursor: pointer;
+      width: 3rem;
+      height: 3rem;
+      padding: .75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
+      transform: scale(.8667);
+      transition: transform .4s var(--ease-out), opacity .2s linear;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-round svg { width: 1.125rem; height: 1.125rem; display: block; pointer-events: none; }
+    .btn-round:hover, .btn-round:active, .btn-round:focus-visible { transform: scale(1); }
+    .btn-round:disabled { opacity: .3; cursor: default; transform: scale(.8667); }
+    .btn-round:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ── Viewer top bar ── */
+    .viewer-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 500;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+      height: 60px;
+      padding: 0 2.5rem;
+      background: rgba(255, 250, 241, .88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(231, 199, 166, .4);
+    }
+
+    .viewer-back {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .8rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color var(--transition-speed);
+    }
+    .viewer-back:hover { color: var(--accent); }
+    .viewer-back svg { width: .9rem; height: .9rem; }
+
+    .viewer-heading {
+      display: flex;
+      align-items: baseline;
+      gap: .75rem;
+      min-width: 0;
+    }
+    .viewer-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      letter-spacing: -.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .viewer-size {
+      font-size: .78rem;
+      letter-spacing: .06em;
+      color: var(--muted);
+      white-space: nowrap;
+    }
+
+    .viewer-lang {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      background: rgba(251, 247, 240, .6);
+      border: 1px solid var(--divider);
+      border-radius: 1.5rem;
+      padding: 3px;
+      flex: 0 0 auto;
+    }
+    .viewer-lang button {
+      background: transparent;
+      border: none;
+      padding: .3rem .85rem;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 1.2rem;
+      color: var(--muted);
+      outline: none;
+      transition: all var(--transition-speed) ease;
+    }
+    .viewer-lang button:hover { color: var(--accent); }
+    .viewer-lang button.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(192, 88, 48, .3);
+    }
+
+    /* ── Artwork stage ── */
+    .stage {
+      min-height: calc(var(--vh) * 100);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4.5rem;
+    }
+
+    .artwork-container {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      background: linear-gradient(180deg, #d7c4aa, #e8d9c5);
+      box-shadow: 0 24px 60px rgba(61, 43, 31, .16);
+      line-height: 0;
+    }
+
+    .artwork-container img {
+      display: block;
+      max-width: 100%;
+      max-height: calc(var(--vh) * 100 - 18.5rem);
+      width: auto;
+      height: auto;
+      opacity: 0;
+      clip-path: inset(0 0 100% 100%);
+    }
+
+    .artwork-container.is-loaded img {
+      animation: RevealClip .5s ease-in-out forwards, ZoomOut .5s ease-in-out forwards;
+    }
+
+    @keyframes RevealClip {
+      0% { clip-path: inset(0 0 100% 100%); opacity: 0; }
+      1% { opacity: 1; }
+      to { clip-path: inset(0 0 0 0); opacity: 1; }
+    }
+    @keyframes ZoomOut {
+      0% { transform: scale(1.3); }
+      to { transform: scale(1); }
+    }
+
+    .artwork-buttons {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      display: flex;
+      gap: .5rem;
+      height: fit-content;
+      width: fit-content;
+      padding-top: .5rem;
+      opacity: 0;
+      transform: translateX(-50%);
+      line-height: normal;
+    }
+
+    .artwork-container.is-loaded .artwork-buttons {
+      animation: ButtonsSlideInToBottom .5s 1s forwards;
+    }
+
+    @keyframes ButtonsSlideInToBottom {
+      0% { opacity: 0; transform: translateY(0) translateX(-50%); }
+      1% { opacity: 1; }
+      to { opacity: 1; transform: translateY(100%) translateX(-50%); }
+    }
+    @keyframes ButtonsSlideInToRight {
+      0% { opacity: 0; transform: translateX(0) translateY(-50%); }
+      1% { opacity: 1; }
+      to { opacity: 1; transform: translateX(100%) translateY(-50%); }
+    }
+
+    .stage-caption {
+      text-align: center;
+      line-height: 1.7;
+    }
+    .stage-caption .caption-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.35rem;
+      color: var(--text);
+    }
+    .stage-caption .caption-meta {
+      font-size: .85rem;
+      letter-spacing: .06em;
+      color: var(--muted);
+    }
+
+    /* ── Full-screen popups ── */
+    .popup {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      max-height: calc(var(--vh) * 100);
+      z-index: 1000;
+      background: var(--viewer-bg);
+      animation: PopupFade .4s ease both;
+    }
+    @keyframes PopupFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .popup-buttons {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 1.25rem 28px 0;
+      z-index: 3;
+    }
+
+    /* ══════════════════════════════
+       DEEP ZOOM
+       ══════════════════════════════ */
+    .deep-zoom {
+      position: relative;
+      height: 100%;
+      overflow: hidden;
+      background: var(--viewer-bg);
+    }
+
+    .deep-zoom-stage {
+      position: relative;
+      height: calc(100% - var(--zoom-bar-height));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      touch-action: none;
+      cursor: grab;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .deep-zoom-stage.dragging { cursor: grabbing; }
+
+    .deep-zoom-img {
+      display: block;
+      max-width: none;
+      max-height: none;
+      will-change: transform;
+      transform-origin: center center;
+      -webkit-user-drag: none;
+      user-select: none;
+      pointer-events: none;
+    }
+    .deep-zoom-img.animate {
+      transition: transform .35s var(--ease-out);
+    }
+
+    .deep-zoom-buttons {
+      position: absolute;
+      right: 0;
+      bottom: var(--zoom-bar-height);
+      margin: 0 3.125rem 3.125rem 0;
+      display: none;
+      z-index: 2;
+    }
+
+    .zoom-bar {
+      height: var(--zoom-bar-height);
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 28px;
+      background: #000;
+      color: #fff;
+    }
+
+    .zoom-bar-btn {
+      appearance: none;
+      background: none;
+      border: none;
+      box-sizing: content-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.25rem;
+      height: 1.25rem;
+      padding: 1rem;
+      margin: -1rem;
+      color: currentColor;
+      cursor: pointer;
+      line-height: 0;
+      flex: 0 0 auto;
+      transition: opacity .2s linear;
+    }
+    .zoom-bar-btn svg { width: .875rem; height: .875rem; display: block; }
+    .zoom-bar-btn:disabled { cursor: default; opacity: .3; }
+    .zoom-bar-btn:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+
+    .zoom-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      background: transparent;
+      height: 100%;
+      width: 100%;
+      margin: 0 1.25rem;
+      padding: 0;
+      cursor: pointer;
+      flex: 0 1 auto;
+      --background-color: #000;
+    }
+    .zoom-slider:focus { outline: none; }
+    .zoom-slider:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+
+    .zoom-slider::-webkit-slider-runnable-track {
+      background: #fff;
+      border: 0;
+      border-radius: 2px;
+      height: 2px;
+      width: 100%;
+      cursor: pointer;
+    }
+    .zoom-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #fff;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 .188rem var(--background-color);
+      height: .625rem;
+      width: .625rem;
+      margin-top: -.4375rem;
+      cursor: pointer;
+      transition: transform .2s var(--ease-out);
+    }
+    .zoom-slider:hover::-webkit-slider-thumb { transform: scale(1.3); }
+    .zoom-slider::-moz-range-track {
+      background: #fff;
+      border: 0;
+      border-radius: 2px;
+      height: 2px;
+      width: 100%;
+      cursor: pointer;
+    }
+    .zoom-slider::-moz-range-thumb {
+      background: #fff;
+      border: 2px solid #fff;
+      border-radius: 50%;
+      box-shadow: inset 0 0 0 .188rem var(--background-color);
+      height: .625rem;
+      width: .625rem;
+      cursor: pointer;
+      transition: transform .2s var(--ease-out);
+    }
+    .zoom-slider:hover::-moz-range-thumb { transform: scale(1.3); }
+
+    .deep-zoom:fullscreen {
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* ══════════════════════════════
+       SIZE COMPARISON
+       ══════════════════════════════ */
+    .vfs {
+      height: 100%;
+      width: 100%;
+      padding: 10.625rem 1.25rem;
+    }
+
+    .vfs-wrapper {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .vfs-painting,
+    .vfs-person {
+      display: flex;
+      align-items: stretch;
+      flex: 0 0 auto;
+    }
+
+    .vfs-painting-img {
+      height: 100%;
+      width: auto;
+      max-width: none;
+      pointer-events: none;
+      display: block;
+      box-shadow: 0 18px 45px rgba(61, 43, 31, .22);
+    }
+
+    .vfs-person-clip {
+      position: relative;
+      display: block;
+      height: 100%;
+      flex: 0 0 auto;
+      aspect-ratio: 422 / 2113;
+      overflow: hidden;
+    }
+
+    .vfs-person-img {
+      position: absolute;
+      top: -9.749%;
+      left: -232.701%;
+      height: 118.315%;
+      width: auto;
+      max-width: none;
+      opacity: 0.7;
+      display: block;
+      flex: 0 0 auto;
+      pointer-events: none;
+      -webkit-user-drag: none;
+      user-select: none;
+    }
+
+    .vfs-dim-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      flex: 0 0 auto;
+    }
+
+    .vfs-dim {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      margin: 0 .625rem;
+      border-left: 2px dotted #000;
+    }
+    .vfs-dim::before,
+    .vfs-dim::after {
+      content: "";
+      display: inline-block;
+      position: absolute;
+      border: solid #000;
+      border-width: 0 2px 2px 0;
+      padding: 3px;
+      margin-left: -5px;
+    }
+    .vfs-dim::before { top: 0; transform: rotate(-135deg); }
+    .vfs-dim::after { bottom: 0; transform: rotate(45deg); }
+
+    .vfs-dim-text {
+      font-weight: 500;
+      font-size: .95rem;
+      color: #000;
+      white-space: nowrap;
+      position: absolute;
+      top: calc(100% + .625rem);
+    }
+    .vfs-painting .vfs-dim-text { left: 0; }
+    .vfs-person .vfs-dim-text { right: 0; }
+
+    /* ── Responsive ── */
+    @media (min-width: 45em) {
+      .popup-buttons { margin-right: 44px; }
+      .zoom-slider { max-width: 12.5rem; }
+    }
+
+    @media (min-width: 64em) {
+      .popup-buttons { margin-right: 85px; }
+      .deep-zoom-buttons { display: block; }
+    }
+
+    @media (orientation: landscape) {
+      .vfs { padding: 4.375rem 0; }
+    }
+
+    @media (orientation: landscape), (min-width: 64em) {
+      .vfs-dim-text {
+        position: relative;
+        top: auto;
+        left: auto;
+        right: auto;
+      }
+    }
+
+    @media (min-width: 64em) {
+      .vfs { padding: 12.5rem 0 8.125rem; }
+      .artwork-buttons {
+        flex-direction: column;
+        gap: .25rem;
+        left: auto;
+        right: 0;
+        top: 50%;
+        bottom: auto;
+        padding-top: 0;
+        padding-left: 1.25rem;
+        transform: translateY(-50%);
+      }
+      .artwork-container.is-loaded .artwork-buttons {
+        animation: ButtonsSlideInToRight .5s 1s forwards;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .viewer-bar { padding: 0 1.25rem; gap: .75rem; }
+      .viewer-title { font-size: .95rem; }
+      .viewer-size { display: none; }
+      .stage { padding: 5.5rem 1.25rem 2.5rem; }
+      .zoom-bar { padding: 0 1.25rem; }
+      .vfs-wrapper { gap: .75rem; }
+      .vfs-dim-text { font-size: .82rem; }
+      .btn-round { width: 2.75rem; height: 2.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Icon sprite -->
+  <svg xmlns="http://www.w3.org/2000/svg" style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true" focusable="false">
+    <symbol id="icon-zoom" viewBox="0 0 24 24"><path fill="currentColor" d="M.346 23.61a1.098 1.098 0 0 1-.361-.819c0-.337.12-.65.36-.88l5.294-5c-1.564-1.855-2.406-4.192-2.286-6.602C3.353 4.623 7.925-.052 13.7-.052c5.654 0 10.345 4.675 10.345 10.361 0 5.687-4.691 10.362-10.345 10.362a10.32 10.32 0 0 1-6.256-2.096L2.03 23.659c-.24.217-.481.337-.842.337-.36 0-.601-.144-.842-.385zm5.293-13.3c0 4.36 3.609 7.951 7.94 7.951 4.45 0 7.939-3.59 7.939-7.952 0-4.361-3.489-7.952-7.94-7.952-4.33 0-7.94 3.59-7.94 7.952zm7.218 2.59v-1.807h-1.805c-.481 0-.842-.41-.842-.904v-.012c0-.494.361-.892.842-.904h1.805V7.466c.12-.494.48-.892.962-.904.481.012.842.41.842.904v1.807h1.804c.602 0 .963.41.963.904 0 .506-.361.916-.963.916h-1.804V12.9c.12.494-.36.903-.842.903-.481 0-.962-.41-.842-.903h-.12z"/></symbol>
+    <symbol id="icon-scale" viewBox="0 0 24 24"><path fill="currentColor" d="M15.9 1h-8a1 1 0 0 0 0 2h7v3h-4a1 1 0 0 0 0 2h4v3h-7a1 1 0 0 0 0 2h7v3h-4a1 1 0 0 0 0 2h4v3h-7a1 1 0 1 0 0 2h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path fill="currentColor" d="M10.286 10.286V1.714a1.715 1.715 0 0 1 3.428 0v8.572h8.572a1.715 1.715 0 0 1 0 3.428h-8.572v8.572a1.715 1.715 0 0 1-3.428 0v-8.572H1.714a1.715 1.715 0 0 1 0-3.428h8.572z"/></symbol>
+    <symbol id="icon-minus" viewBox="0 0 24 24"><path fill="currentColor" d="M22.286 10.286H1.714a1.715 1.715 0 0 0 0 3.428h20.572a1.715 1.715 0 0 0 0-3.428z"/></symbol>
+    <symbol id="icon-close" viewBox="0 0 24 24"><path fill="currentColor" d="m13.7 12 9.16 9.16c.56.57.64 1.4.17 1.87-.47.47-1.3.4-1.87-.17L12 13.7l-9.16 9.16c-.57.56-1.4.64-1.87.17-.47-.47-.4-1.3.17-1.87L10.3 12 1.14 2.84C.58 2.27.5 1.44.97.97c.47-.47 1.3-.4 1.87.17L12 10.3l9.16-9.16c.57-.56 1.4-.64 1.87-.17.47.47.4 1.3-.17 1.87L13.7 12z"/></symbol>
+    <symbol id="icon-size-up" viewBox="0 0 24 24"><path fill="currentColor" d="M1.48 24.022c-.377 0-.753-.163-1.004-.452-.251-.238-.377-.59-.377-.966v-7.53c0-.678.502-1.255 1.255-1.255.628 0 1.255.577 1.255 1.255v6.438h6.4c.754 0 1.256.565 1.256 1.255s-.502 1.255-1.255 1.255H1.48zm20.08-15.06V2.524h-6.4c-.754 0-1.256-.565-1.256-1.255S14.406.014 15.16.014h7.53c.753.062 1.381.665 1.381 1.405v7.53c0 .34-.125.653-.376.891-.252.226-.503.364-.879.364-.628 0-1.255-.564-1.255-1.255v.013z"/></symbol>
+    <symbol id="icon-size-down" viewBox="0 0 24 24"><path fill="currentColor" d="M6.78 24c-.478 0-.956-.43-.956-.956v-4.89H.952c-.573 0-.955-.43-.955-.956s.382-.955.955-.955h5.732c.573.047 1.051.506 1.051 1.07v5.731a.917.917 0 0 1-.287.679.893.893 0 0 1-.668.277zm9.744-16.575c-.191-.181-.287-.449-.287-.735V.958c0-.249.096-.488.287-.67.19-.18.382-.286.669-.286.477 0 .955.43.955.956v4.9h4.872c.573 0 .955.43.955.956 0 .525-.382.955-.955.955h-5.732a1.096 1.096 0 0 1-.764-.344z"/></symbol>
+    <symbol id="icon-arrow-left" viewBox="0 0 24 24"><path fill="currentColor" d="M9.6 3.2 2.8 10a1.8 1.8 0 0 0 0 2.6l6.8 6.8a1.8 1.8 0 1 0 2.6-2.6l-4-4h11.3a1.8 1.8 0 1 0 0-3.6H8.2l4-4A1.8 1.8 0 0 0 9.6 3.2z"/></symbol>
+  </svg>
+
+  <!-- Top bar -->
+  <header class="viewer-bar">
+    <a class="viewer-back" href="index.html#galeria">
+      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-arrow-left"></use></svg>
+      <span data-lang="pt">Obras</span>
+      <span data-lang="en">Works</span>
+    </a>
+
+    <div class="viewer-heading">
+      <span class="viewer-title">
+        <span id="barTitlePt" data-lang="pt">Pintura II</span>
+        <span id="barTitleEn" data-lang="en">Painting II</span>
+      </span>
+      <span class="viewer-size" id="barSize">64 &times; 80 cm</span>
+    </div>
+
+    <div class="viewer-lang">
+      <button type="button" id="btnPT" onclick="setLang('pt')">PT</button>
+      <button type="button" id="btnEN" onclick="setLang('en')">EN</button>
+    </div>
+  </header>
+
+  <!-- Artwork stage -->
+  <main class="stage">
+    <div class="artwork-container" id="artworkContainer">
+      <img id="artworkImg" src="images/quadro_2.png"
+           alt="Pintura II de Maria da Luz"
+           data-alt-pt="Pintura II de Maria da Luz" data-alt-en="Painting II by Maria da Luz">
+
+      <div class="artwork-buttons">
+        <button class="btn-round" type="button" id="openZoom"
+                aria-label="Ampliar obra"
+                data-label-pt="Ampliar obra" data-label-en="Enlarge artwork">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-zoom"></use></svg>
+        </button>
+        <button class="btn-round" type="button" id="openScale"
+                aria-label="Ver dimensões reais"
+                data-label-pt="Ver dimensões reais" data-label-en="See real-life size">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-scale"></use></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="stage-caption">
+      <div class="caption-title">
+        <span id="capTitlePt" data-lang="pt">Pintura II</span>
+        <span id="capTitleEn" data-lang="en">Painting II</span>
+      </div>
+      <div class="caption-meta">
+        <span id="capSize">64 &times; 80 cm</span><span data-lang="pt">&nbsp;&middot; clique na lupa para ampliar</span><span data-lang="en">&nbsp;&middot; click the magnifier to zoom</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- ══ DEEP ZOOM POPUP ══ -->
+  <div class="popup" id="zoomPopup" role="dialog" aria-modal="true" aria-label="Ampliação da obra" hidden>
+    <div class="popup-buttons">
+      <button class="btn-round" type="button" id="closeZoom"
+              aria-label="Fechar ampliação"
+              data-label-pt="Fechar ampliação" data-label-en="Close viewer">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg>
+      </button>
+    </div>
+
+    <div class="deep-zoom" id="deepZoom">
+      <div class="deep-zoom-stage" id="dzStage">
+        <img class="deep-zoom-img" id="dzImg" src="images/quadro_2.png" alt="" draggable="false">
+      </div>
+
+      <div class="deep-zoom-buttons">
+        <button class="btn-round" type="button" id="dzFullscreen"
+                aria-label="Ecrã inteiro"
+                data-label-pt="Ecrã inteiro" data-label-en="Fullscreen">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-size-up"></use></svg>
+        </button>
+      </div>
+
+      <div class="zoom-bar">
+        <button class="zoom-bar-btn" type="button" id="dzOut" aria-label="Reduzir" data-label-pt="Reduzir" data-label-en="Zoom out">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-minus"></use></svg>
+        </button>
+        <input class="zoom-slider" type="range" id="dzSlider" min="1" max="6" step="0.01" value="1"
+               aria-label="Nível de ampliação" data-label-pt="Nível de ampliação" data-label-en="Zoom level">
+        <button class="zoom-bar-btn" type="button" id="dzIn" aria-label="Ampliar" data-label-pt="Ampliar" data-label-en="Zoom in">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-plus"></use></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SIZE COMPARISON POPUP ══ -->
+  <div class="popup" id="vfsPopup" role="dialog" aria-modal="true" aria-label="Comparação de tamanho" hidden>
+    <div class="popup-buttons">
+      <button class="btn-round" type="button" id="closeVfs"
+              aria-label="Fechar dimensões"
+              data-label-pt="Fechar dimensões" data-label-en="Close dimensions">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><use href="#icon-close"></use></svg>
+      </button>
+    </div>
+
+    <div class="vfs" id="vfsRoot">
+      <div class="vfs-wrapper" id="vfsWrapper">
+        <div class="vfs-painting" id="vfsPainting">
+          <div class="vfs-dim-wrap" id="vfsPaintDim">
+            <p class="vfs-dim-text" id="vfsPaintLabel">80 cm</p>
+            <div class="vfs-dim"></div>
+          </div>
+          <img class="vfs-painting-img" id="vfsPaintImg" src="images/quadro_2.png" alt="">
+        </div>
+
+        <div class="vfs-person" id="vfsPerson">
+          <span class="vfs-person-clip">
+            <img class="vfs-person-img" id="vfsPersonImg" src="images/silhouette_BW.png" alt="" aria-hidden="true" draggable="false">
+          </span>
+          <div class="vfs-dim-wrap" id="vfsPersonDim">
+            <div class="vfs-dim"></div>
+            <p class="vfs-dim-text" id="vfsPersonLabel">164 cm</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ══════════════════════════════
+    // CONFIG — edit these values only
+    // ══════════════════════════════
+    const ARTWORKS = {
+      'quadro_1.png': { titlePt: 'Pintura I',   titleEn: 'Painting I',   widthCm: 80, heightCm: 82 },
+      'quadro_2.png': { titlePt: 'Pintura II',  titleEn: 'Painting II',  widthCm: 64, heightCm: 80 },
+      'quadro_3.png': { titlePt: 'Pintura III', titleEn: 'Painting III', widthCm: 56, heightCm: 70 }
+    };
+
+    const DEFAULT_ARTWORK = 'quadro_2.png';
+
+    function pickArtwork() {
+      const params = new URLSearchParams(location.search);
+      let file = (params.get('img') || params.get('obra') || DEFAULT_ARTWORK).trim();
+      if (!/\.png$/i.test(file)) file += '.png';
+      if (!Object.prototype.hasOwnProperty.call(ARTWORKS, file)) file = DEFAULT_ARTWORK;
+      return Object.assign({ file: file, src: 'images/' + file }, ARTWORKS[file]);
+    }
+
+    const ARTWORK = pickArtwork();
+
+    // Reference figure used for the real-life size comparison.
+    const FIGURE = {
+      heightCm: 164
+    };
+
+    const ZOOM = {
+      min: 1,          // 1 = image fitted to the stage
+      step: 0.75       // each click of +/− multiplies/divides by 0.75
+    };
+
+    (function applyArtwork() {
+      const setText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = text;
+      };
+      const size = ARTWORK.widthCm + ' \u00d7 ' + ARTWORK.heightCm + ' cm';
+
+      document.title = ARTWORK.titlePt + ' \u2014 Maria da Luz';
+      setText('barTitlePt', ARTWORK.titlePt);
+      setText('barTitleEn', ARTWORK.titleEn);
+      setText('capTitlePt', ARTWORK.titlePt);
+      setText('capTitleEn', ARTWORK.titleEn);
+      setText('barSize', size);
+      setText('capSize', size);
+
+      ['artworkImg', 'dzImg', 'vfsPaintImg'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.src = ARTWORK.src;
+      });
+
+      const alt = document.getElementById('artworkImg');
+      if (alt) {
+        alt.setAttribute('data-alt-pt', ARTWORK.titlePt + ' de Maria da Luz');
+        alt.setAttribute('data-alt-en', ARTWORK.titleEn + ' by Maria da Luz');
+      }
+    })();
+
+    // ══════════════════════════════
+    // LANGUAGE
+    // ══════════════════════════════
+    function setLang(lang) {
+      document.documentElement.setAttribute('data-active-lang', lang);
+      document.documentElement.setAttribute('lang', lang);
+      document.getElementById('btnPT').classList.toggle('active', lang === 'pt');
+      document.getElementById('btnEN').classList.toggle('active', lang === 'en');
+
+      document.querySelectorAll('[data-label-pt]').forEach(el => {
+        el.setAttribute('aria-label', el.getAttribute('data-label-' + lang));
+      });
+      document.querySelectorAll('[data-alt-pt]').forEach(el => {
+        el.setAttribute('alt', el.getAttribute('data-alt-' + lang));
+      });
+      try { localStorage.setItem('mdl_preferred_lang', lang); } catch (e) {}
+    }
+
+    (function initLanguage() {
+      let saved = 'pt';
+      try { saved = localStorage.getItem('mdl_preferred_lang') || 'pt'; } catch (e) {}
+      setLang(saved);
+    })();
+
+    // ══════════════════════════════
+    // VIEWPORT UNIT (mobile 100vh fix)
+    // ══════════════════════════════
+    function setVh() {
+      document.documentElement.style.setProperty('--vh', (window.innerHeight * 0.01) + 'px');
+    }
+    setVh();
+    window.addEventListener('resize', setVh);
+
+    // ══════════════════════════════
+    // STAGE — reveal + buttons
+    // ══════════════════════════════
+    const artworkContainer = document.getElementById('artworkContainer');
+    const artworkImg = document.getElementById('artworkImg');
+
+    function revealArtwork() { artworkContainer.classList.add('is-loaded'); }
+    if (artworkImg.complete) revealArtwork();
+    else artworkImg.addEventListener('load', revealArtwork);
+
+    // ══════════════════════════════
+    // SHARED DIALOG PLUMBING
+    // ══════════════════════════════
+    let activeDialog = null;
+    let lastFocused = null;
+    let fullscreenExitedAt = 0;
+
+    function focusables(root) {
+      return Array.from(root.querySelectorAll(
+        'button:not([disabled]), a[href], input:not([disabled]), [tabindex]:not([tabindex="-1"])'
+      )).filter(el => el.offsetParent !== null || el === document.activeElement);
+    }
+
+    function openDialog(dialog, firstFocus) {
+      if (activeDialog) closeDialog(activeDialog);
+      lastFocused = document.activeElement;
+      activeDialog = dialog;
+      dialog.hidden = false;
+      document.body.style.overflow = 'hidden';
+      requestAnimationFrame(() => (firstFocus || focusables(dialog)[0])?.focus());
+    }
+
+    function closeDialog(dialog) {
+      dialog.hidden = true;
+      document.body.style.overflow = '';
+      if (activeDialog === dialog) activeDialog = null;
+      lastFocused?.focus();
+      lastFocused = null;
+    }
+
+    document.addEventListener('keydown', e => {
+      if (!activeDialog) return;
+
+      if (e.key === 'Escape') {
+        if (document.fullscreenElement || Date.now() - fullscreenExitedAt < 400) return;
+        closeDialog(activeDialog);
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        const items = focusables(activeDialog);
+        if (!items.length) return;
+        const first = items[0];
+        const last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
+    });
+
+    // ══════════════════════════════
+    // DEEP ZOOM
+    // ══════════════════════════════
+    const zoomPopup = document.getElementById('zoomPopup');
+    const deepZoom = document.getElementById('deepZoom');
+    const dzStage = document.getElementById('dzStage');
+    const dzImg = document.getElementById('dzImg');
+    const dzSlider = document.getElementById('dzSlider');
+    const dzIn = document.getElementById('dzIn');
+    const dzOut = document.getElementById('dzOut');
+    const dzFullscreen = document.getElementById('dzFullscreen');
+    const dzFullscreenIcon = dzFullscreen.querySelector('use');
+
+    const dz = {
+      k: 1,            // zoom factor relative to the fitted size
+      max: 6,
+      tx: 0, ty: 0,    // translation in CSS px
+      fit: 1,          // fitted scale (image px → CSS px)
+      natW: 0, natH: 0,
+      viewW: 0, viewH: 0
+    };
+
+    const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+
+    function dzMeasure() {
+      const rect = dzStage.getBoundingClientRect();
+      dz.viewW = rect.width;
+      dz.viewH = rect.height;
+      dz.natW = dzImg.naturalWidth || ARTWORK.widthCm;
+      dz.natH = dzImg.naturalHeight || ARTWORK.heightCm;
+      if (!dz.natW || !dz.natH || !dz.viewW || !dz.viewH) return;
+
+      dz.fit = Math.min(dz.viewW / dz.natW, dz.viewH / dz.natH);
+      dz.max = clamp(1.5 / dz.fit, 4, 12);
+
+      dzImg.style.width = (dz.natW * dz.fit) + 'px';
+      dzImg.style.height = (dz.natH * dz.fit) + 'px';
+
+      dzSlider.max = dz.max.toFixed(2);
+      dzRender();
+    }
+
+    function dzRender() {
+      const w = dz.natW * dz.fit * dz.k;
+      const h = dz.natH * dz.fit * dz.k;
+      const maxX = Math.max(0, (w - dz.viewW) / 2);
+      const maxY = Math.max(0, (h - dz.viewH) / 2);
+      dz.tx = clamp(dz.tx, -maxX, maxX);
+      dz.ty = clamp(dz.ty, -maxY, maxY);
+
+      dzImg.style.transform = 'translate3d(' + dz.tx + 'px,' + dz.ty + 'px,0) scale(' + dz.k + ')';
+      dzSlider.value = dz.k;
+      dzOut.disabled = dz.k <= ZOOM.min + 1e-4;
+      dzIn.disabled = dz.k >= dz.max - 1e-4;
+    }
+
+    function dzAnimate(on) {
+      dzImg.classList.toggle('animate', !!on);
+      if (on) {
+        clearTimeout(dzAnimate._t);
+        dzAnimate._t = setTimeout(() => dzImg.classList.remove('animate'), 400);
+      }
+    }
+
+    // Anchor the zoom on a viewport point so the pixel under the cursor stays put.
+    function dzZoomAt(clientX, clientY, nextK, animate) {
+      if (!dz.viewW) return;
+      const rect = dzStage.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const px = (clientX - cx - dz.tx) / dz.k;
+      const py = (clientY - cy - dz.ty) / dz.k;
+
+      dz.k = clamp(nextK, ZOOM.min, dz.max);
+      dz.tx = (clientX - cx) - dz.k * px;
+      dz.ty = (clientY - cy) - dz.k * py;
+
+      dzAnimate(animate);
+      dzRender();
+    }
+
+    function dzZoomCentered(factor, animate) {
+      const rect = dzStage.getBoundingClientRect();
+      dzZoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, dz.k * factor, animate);
+    }
+
+    // Wheel / trackpad
+    dzStage.addEventListener('wheel', e => {
+      e.preventDefault();
+      const unit = e.deltaMode === 1 ? 16 : (e.deltaMode === 2 ? dz.viewH : 1);
+      const factor = Math.exp(-e.deltaY * unit * 0.0018);
+      dzZoomAt(e.clientX, e.clientY, dz.k * factor, false);
+    }, { passive: false });
+
+    // Drag to pan + pinch to zoom
+    const pointers = new Map();
+    let pinchDist = 0;
+
+    dzStage.addEventListener('pointerdown', e => {
+      dzStage.setPointerCapture(e.pointerId);
+      pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pointers.size === 1) dzStage.classList.add('dragging');
+      if (pointers.size === 2) {
+        const [a, b] = Array.from(pointers.values());
+        pinchDist = Math.hypot(a.x - b.x, a.y - b.y);
+      }
+    });
+
+    dzStage.addEventListener('pointermove', e => {
+      if (!pointers.has(e.pointerId)) return;
+      const prev = pointers.get(e.pointerId);
+      const cur = { x: e.clientX, y: e.clientY };
+
+      if (pointers.size === 1) {
+        dz.tx += cur.x - prev.x;
+        dz.ty += cur.y - prev.y;
+        dzRender();
+      } else if (pointers.size >= 2) {
+        pointers.set(e.pointerId, cur);
+        const [a, b] = Array.from(pointers.values());
+        const dist = Math.hypot(a.x - b.x, a.y - b.y);
+        const midX = (a.x + b.x) / 2;
+        const midY = (a.y + b.y) / 2;
+        if (pinchDist > 0) {
+          const rect = dzStage.getBoundingClientRect();
+          const cx = rect.left + rect.width / 2;
+          const cy = rect.top + rect.height / 2;
+          const px = (midX - cx - dz.tx) / dz.k;
+          const py = (midY - cy - dz.ty) / dz.k;
+          dz.k = clamp(dz.k * (dist / pinchDist), ZOOM.min, dz.max);
+          dz.tx = (midX - cx) - dz.k * px;
+          dz.ty = (midY - cy) - dz.k * py;
+          pinchDist = dist;
+          dzRender();
+        }
+        return;
+      }
+
+      pointers.set(e.pointerId, cur);
+    });
+
+    function releasePointer(e) {
+      pointers.delete(e.pointerId);
+      if (pointers.size < 2) pinchDist = 0;
+      if (pointers.size === 0) dzStage.classList.remove('dragging');
+    }
+    dzStage.addEventListener('pointerup', releasePointer);
+    dzStage.addEventListener('pointercancel', releasePointer);
+
+    // Double click: jump between fitted and close-up
+    dzStage.addEventListener('dblclick', e => {
+      e.preventDefault();
+      if (dz.k > 1.05) dzZoomAt(e.clientX, e.clientY, ZOOM.min, true);
+      else dzZoomAt(e.clientX, e.clientY, Math.min(3, dz.max), true);
+    });
+
+    dzIn.addEventListener('click', () => dzZoomCentered(1 / ZOOM.step, true));
+    dzOut.addEventListener('click', () => dzZoomCentered(ZOOM.step, true));
+
+    dzSlider.addEventListener('input', () => {
+      const rect = dzStage.getBoundingClientRect();
+      dzZoomAt(rect.left + rect.width / 2, rect.top + rect.height / 2, parseFloat(dzSlider.value), false);
+    });
+
+    dzFullscreen.addEventListener('click', () => {
+      if (document.fullscreenElement) document.exitFullscreen();
+      else deepZoom.requestFullscreen?.();
+    });
+
+    document.addEventListener('fullscreenchange', () => {
+      const full = !!document.fullscreenElement;
+      dzFullscreenIcon.setAttribute('href', full ? '#icon-size-down' : '#icon-size-up');
+      if (!full) fullscreenExitedAt = Date.now();
+      requestAnimationFrame(() => { dzMeasure(); });
+    });
+
+    function openZoomDialog() {
+      openDialog(zoomPopup, document.getElementById('closeZoom'));
+      dz.k = ZOOM.min;
+      dz.tx = dz.ty = 0;
+      requestAnimationFrame(dzMeasure);
+    }
+
+    document.getElementById('openZoom').addEventListener('click', openZoomDialog);
+    document.getElementById('closeZoom').addEventListener('click', () => {
+      if (document.fullscreenElement) document.exitFullscreen();
+      closeDialog(zoomPopup);
+    });
+
+    window.addEventListener('resize', () => { if (!zoomPopup.hidden) dzMeasure(); });
+
+    // ══════════════════════════════
+    // SIZE COMPARISON
+    // ══════════════════════════════
+    const vfsPopup = document.getElementById('vfsPopup');
+    const vfsWrapper = document.getElementById('vfsWrapper');
+    const vfsPainting = document.getElementById('vfsPainting');
+    const vfsPerson = document.getElementById('vfsPerson');
+    const vfsPaintImg = document.getElementById('vfsPaintImg');
+    const vfsPersonImg = document.getElementById('vfsPersonImg');
+    const vfsPaintDim = document.getElementById('vfsPaintDim');
+    const vfsPersonDim = document.getElementById('vfsPersonDim');
+
+    document.getElementById('vfsPaintLabel').textContent = fmtCm(ARTWORK.heightCm);
+    document.getElementById('vfsPersonLabel').textContent = fmtCm(FIGURE.heightCm);
+
+    function fmtCm(cm) {
+      return (Math.round(cm * 10) / 10).toString().replace('.', ',') + ' cm';
+    }
+
+    // Mirrors the original logic:
+    //   artwork taller than the figure → the figure stands on the artwork's baseline
+    //   otherwise                      → both are aligned at the top
+    function isBigPainting() {
+      return ARTWORK.heightCm > FIGURE.heightCm;
+    }
+
+    function applyScene(sceneH) {
+      const big = isBigPainting();
+      const paintingH = big ? sceneH : sceneH * ARTWORK.heightCm / FIGURE.heightCm;
+      const personH = big ? sceneH * FIGURE.heightCm / ARTWORK.heightCm : sceneH;
+
+      vfsWrapper.style.alignItems = big ? 'flex-end' : 'flex-start';
+      vfsPainting.style.height = paintingH + 'px';
+      vfsPerson.style.height = personH + 'px';
+    }
+
+    function layoutVfs() {
+      const availW = vfsWrapper.clientWidth;
+      const availH = vfsWrapper.clientHeight;
+      if (!availW || !availH) return;
+
+      applyScene(availH);
+
+      const paintingW = vfsPainting.offsetWidth;
+      const personW = vfsPerson.offsetWidth;
+      const gap = parseFloat(getComputedStyle(vfsWrapper).columnGap) || 0;
+      const fixedW = vfsPaintDim.offsetWidth + gap + vfsPersonDim.offsetWidth;
+      const widthFactor = (paintingW + personW) / availH;
+
+      const sceneH = Math.max(160, Math.min(availH, (availW - fixedW) / widthFactor));
+      applyScene(sceneH);
+    }
+
+    function openVfsDialog() {
+      openDialog(vfsPopup, document.getElementById('closeVfs'));
+      requestAnimationFrame(layoutVfs);
+    }
+
+    document.getElementById('openScale').addEventListener('click', openVfsDialog);
+    document.getElementById('closeVfs').addEventListener('click', () => closeDialog(vfsPopup));
+    window.addEventListener('resize', () => { if (!vfsPopup.hidden) layoutVfs(); });
+
+    // Deep link: index.html?pintura#scale opens the size comparison
+    if (location.hash === '#scale') setTimeout(openVfsDialog, 300);
+  </script>
+</body>
+</html>
