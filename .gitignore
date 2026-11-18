@@ -1,0 +1,6 @@
+# Windows download markers (added when files are copied from Windows)
+*:Zone.Identifier
+
+# OS and editor files
+.DS_Store
+Thumbs.db
